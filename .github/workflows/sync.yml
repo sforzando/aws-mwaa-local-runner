@@ -1,0 +1,25 @@
+name: Sync
+
+on: [push, pull_request, workflow_dispatch]
+
+env:
+  AWS_ACCOUNT: 476531600727
+  AWS_REGION: ap-northeast-1
+  AWS_ROLE_NAME: gha-mwaa
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS credentials with IAM Role
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT }}:role/${{ env.AWS_ROLE_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: List Buckets (Debug)
+        run: aws s3 list-buckets
