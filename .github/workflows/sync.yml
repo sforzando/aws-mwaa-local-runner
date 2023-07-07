@@ -6,10 +6,11 @@ env:
   AWS_ACCOUNT: 476531600727
   AWS_REGION: ap-northeast-1
   AWS_ROLE_NAME: gha-mwaa
+  DESTINATION_BUCKET: mwaa-476531600727-20230704115049092400000003
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     permissions:
       id-token: write
       contents: read
@@ -21,5 +22,9 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT }}:role/${{ env.AWS_ROLE_NAME }}
           aws-region: ${{ env.AWS_REGION }}
-      - name: List Buckets (Debug)
+      - name: List Buckets (as Debug)
         run: aws s3 ls
+      - name: Build
+        run: ./mwaa-local-env build-image
+      - name: Sync DAG files
+        run: aws s3 sync dags s3://${{ env.DESTINATION_BUCKET }}/dags
