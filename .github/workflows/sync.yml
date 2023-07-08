@@ -24,8 +24,6 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: List Buckets (as Debug)
         run: aws s3 ls
-      - name: Build
-        run: ./mwaa-local-env build-image
       - name: Sync Plugins 
         run: aws s3 sync plugins s3://${{ env.DESTINATION_BUCKET }}/plugins
       - name: Sync startup.sh
