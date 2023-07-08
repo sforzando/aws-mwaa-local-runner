@@ -26,9 +26,9 @@ jobs:
         run: aws s3 ls
       - name: Sync Plugins 
         run: aws s3 sync plugins s3://${{ env.DESTINATION_BUCKET }}/plugins
-      - name: Sync startup.sh
-        run: aws s3 sync startup_script/startup.sh s3://${{ env.DESTINATION_BUCKET }}/startup.sh
-      - name: Sync requirements.txt
-        run: aws s3 sync requirements.txt s3://${{ env.DESTINATION_BUCKET }}/requirements.txt
+      - name: Copy startup.sh
+        run: aws s3 cp startup_script/startup.sh s3://${{ env.DESTINATION_BUCKET }}/startup.sh
+      - name: Copy requirements.txt
+        run: aws s3 cp requirements.txt s3://${{ env.DESTINATION_BUCKET }}/requirements.txt
       - name: Sync DAG files
         run: aws s3 sync dags s3://${{ env.DESTINATION_BUCKET }}/dags --exclude "dags/__pycache__/*"
