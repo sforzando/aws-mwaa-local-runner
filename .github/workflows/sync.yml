@@ -29,6 +29,6 @@ jobs:
       - name: Copy startup.sh
         run: aws s3 cp startup_script/startup.sh s3://${{ env.DESTINATION_BUCKET }}/startup.sh
       - name: Copy requirements.txt
-        run: aws s3 cp requirements.txt s3://${{ env.DESTINATION_BUCKET }}/requirements.txt
+        run: aws s3 cp requirements/requirements.txt s3://${{ env.DESTINATION_BUCKET }}/requirements.txt
       - name: Sync DAG files
         run: aws s3 sync dags s3://${{ env.DESTINATION_BUCKET }}/dags --exclude "dags/__pycache__/*"
