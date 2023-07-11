@@ -20,7 +20,7 @@ ignore = [
   "T201", # print
 ]
 show-fixes = true
-show-source = false
+show-source = true
 
 [tool.ruff.pydocstyle]
 convention = "google"

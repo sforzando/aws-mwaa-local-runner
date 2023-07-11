@@ -15,9 +15,7 @@ OPTS :=
 .DEFAULT_GOAL := default
 .PHONY: default setup hide reveal open build start check test doc clean prune help
 
-default: up ## 常用
-	make open
-	make follow
+default: start ## 常用
 
 setup: ## 初期
 ifeq ($(OS_NAME),Darwin)
@@ -48,7 +46,7 @@ start: build ## 開始
 	./mwaa-local-env start
 
 check: ## 検証
-	ruff check --fix .
+	pre-commit run --all-files
 	@if [ $(OS_NAME) = "Darwin" ]; then say "The check process is complete." ; fi
 
 test: ## 試験

@@ -1,116 +1,88 @@
-# About aws-mwaa-local-runner
+# aws-mwaa-local-runner
 
-This repository provides a command line interface (CLI) utility that replicates an Amazon Managed Workflows for Apache Airflow (MWAA) environment locally.
+[![Sync](https://github.com/sforzando/aws-mwaa-local-runner/actions/workflows/sync.yml/badge.svg)](https://github.com/sforzando/aws-mwaa-local-runner/actions/workflows/sync.yml)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-*Please note: MWAA/AWS/DAG/Plugin issues should be raised through AWS Support or the Airflow Slack #airflow-aws channel.  Issues here should be focused on this local-runner repository.*
-
-## About the CLI
-
-The CLI builds a Docker container image locally that’s similar to a MWAA production image. This allows you to run a local Apache Airflow environment to develop and test DAGs, custom plugins, and dependencies before deploying to MWAA.
-
-## What this repo contains
-
-```text
-dags/
-  example_lambda.py
-  example_dag_with_taskflow_api.py
-  example_redshift_data_execute_sql.py
-docker/
-  config/
-    airflow.cfg
-    constraints.txt
-    mwaa-base-providers-requirements.txt
-    webserver_config.py
-    .env.localrunner
-  script/
-    bootstrap.sh
-    entrypoint.sh
-    systemlibs.sh
-    generate_key.sh
-  docker-compose-local.yml
-  docker-compose-resetdb.yml
-  docker-compose-sequential.yml
-  Dockerfile
-plugins/
-  README.md
-requirements/
-  requirements.txt
-.gitignore
-CODE_OF_CONDUCT.md
-CONTRIBUTING.md
-LICENSE
-mwaa-local-env
-README.md
-VERSION
-```
+- [Prerequisites](#prerequisites)
+- [How to](#how-to)
+  - [Setup](#setup)
+  - [Start](#start)
+  - [Airflow UI](#airflow-ui)
+  - [Requirements.txt](#requirementstxt)
+  - [Plugins](#plugins)
+  - [Startup Scripts](#startup-scripts)
+- [What's NEXT?](#whats-next)
+- [FAQs](#faqs)
+  - [Can I test execution role permissions using this repository?](#can-i-test-execution-role-permissions-using-this-repository)
+  - [How do I add libraries to requirements.txt and test install?](#how-do-i-add-libraries-to-requirementstxt-and-test-install)
+  - [What if a library is not available on PyPi.org?](#what-if-a-library-is-not-available-on-pypiorg)
+  - [My environment is not starting](#my-environment-is-not-starting)
+  - [Fernet Key InvalidToken](#fernet-key-invalidtoken)
+- [Security](#security)
+- [License](#license)
 
 ## Prerequisites
 
-- **macOS**: [Install Docker Desktop](https://docs.docker.com/desktop/).
-- **Linux/Ubuntu**: [Install Docker Compose](https://docs.docker.com/compose/install/) and [Install Docker Engine](https://docs.docker.com/engine/install/).
-- **Windows**: Windows Subsystem for Linux (WSL) to run the bash based command `mwaa-local-env`. Please follow [Windows Subsystem for Linux Installation (WSL)](https://docs.docker.com/docker-for-windows/wsl/) and [Using Docker in WSL 2](https://code.visualstudio.com/blogs/2020/03/02/docker-in-wsl2), to get started.
+- Docker
+  - Python (Version 3.10 or higher)
+- [pre-commit](https://pre-commit.com)
+- [Ruff](https://beta.ruff.rs/docs/)
+- [hadolint](https://github.com/hadolint/hadolint)
 
-## Get started
+## How to
 
-```bash
-git clone https://github.com/aws/aws-mwaa-local-runner.git
-cd aws-mwaa-local-runner
+```shell
+default              常用
+setup                初期
+hide                 秘匿
+reveal               暴露
+open                 閲覧
+build                構築
+start                開始
+check                検証
+test                 試験
+doc                  文書
+clean                掃除
+prune                破滅
+help                 助言
 ```
 
-### Step one: Building the Docker image
+### Setup
 
-Build the Docker container image using the following command:
-
-```bash
-./mwaa-local-env build-image
+```shell
+make setup
 ```
 
-**Note**: it takes several minutes to build the Docker image locally.
+### Start
 
-### Step two: Running Apache Airflow
-
-#### Local runner
-
-Runs a local Apache Airflow environment that is a close representation of MWAA by configuration.
-
-```bash
-./mwaa-local-env start
+```shell
+make start
 ```
 
 To stop the local environment, Ctrl+C on the terminal and wait till the local runner and the postgres containers are stopped.
 
-### Step three: Accessing the Airflow UI
+### Airflow UI
+
+Open the Apache Airflow UI: [http://0.0.0.0:8080](http://0.0.0.0:8080)
 
 By default, the `bootstrap.sh` script creates a username and password for your local Airflow environment.
 
 - Username: `admin`
 - Password: `test`
 
-#### Airflow UI
-
-- Open the Apache Airflow UI: <http://localhost:8080/>.
-
-### Step four: Add DAGs and supporting files
-
-The following section describes where to add your DAG code and supporting files. We recommend creating a directory structure similar to your MWAA environment.
-
-#### DAGs
-
-1. Add DAG code to the `dags/` folder.
-2. To run the sample code in this repository, see the `example_dag_with_taskflow_api.py` file.
-
-#### Requirements.txt
+### Requirements.txt
 
 1. Add Python dependencies to `requirements/requirements.txt`.
 2. To test a requirements.txt without running Apache Airflow, use the following script:
 
-```bash
+```shell
 ./mwaa-local-env test-requirements
 ```
 
 Let's say you add `aws-batch==0.6` to your `requirements/requirements.txt` file. You should see an output similar to:
 
-```bash
+```shell
 Installing requirements.txt
 Collecting aws-batch (from -r /usr/local/airflow/dags/requirements.txt (line 1))
   Downloading https://files.pythonhosted.org/packages/5d/11/3aedc6e150d2df6f3d422d7107ac9eba5b50261cf57ab813bb00d8299a34/aws_batch-0.6.tar.gz
@@ -127,13 +99,13 @@ Successfully installed aws-batch-0.6 awscli-1.19.21 botocore-1.20.21 docutils-0.
 
 3. To package the necessary WHL files for your requirements.txt without running Apache Airflow, use the following script:
 
-```bash
+```shell
 ./mwaa-local-env package-requirements
 ```
 
 For example usage see [Installing Python dependencies using PyPi.org Requirements File Format Option two: Python wheels (.whl)](https://docs.aws.amazon.com/mwaa/latest/userguide/best-practices-dependencies.html#best-practices-dependencies-python-wheels).
 
-#### Custom plugins
+### Plugins
 
 - There is a directory at the root of this repository called plugins.
 - In this directory, create a file for your new custom plugin.
@@ -141,17 +113,17 @@ For example usage see [Installing Python dependencies using PyPi.org Requirement
 
 **Note**: this step assumes you have a DAG that corresponds to the custom plugin. For example usage [MWAA Code Examples](https://docs.aws.amazon.com/mwaa/latest/userguide/sample-code.html).
 
-#### Startup script
+### Startup Scripts
 
 - There is a sample shell script `startup.sh` located in a directory at the root of this repository called `startup_script`.
 - If there is a need to run additional setup (e.g. install system libraries, setting up environment variables), please modify the `startup.sh` script.
 - To test a `startup.sh` without running Apache Airflow, use the following script:
 
-```bash
+```shell
 ./mwaa-local-env test-startup-script
 ```
 
-## What's next?
+## What's NEXT?
 
 - Learn how to upload the requirements.txt file to your Amazon S3 bucket in [Installing Python dependencies](https://docs.aws.amazon.com/mwaa/latest/userguide/working-dags-dependencies.html).
 - Learn how to upload the DAG code to the dags folder in your Amazon S3 bucket in [Adding or updating DAGs](https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-folder.html).
@@ -174,10 +146,6 @@ To learn more, see [Amazon MWAA Execution Role](https://docs.aws.amazon.com/mwaa
 ### What if a library is not available on PyPi.org?
 
 - If a library is not available in the Python Package Index (PyPi.org), add the `--index-url` flag to the package in your `requirements/requirements.txt` file. To learn more, see [Managing Python dependencies in requirements.txt](https://docs.aws.amazon.com/mwaa/latest/userguide/best-practices-dependencies.html).
-
-## Troubleshooting
-
-The following section contains errors you may encounter when using the Docker container image in this repository.
 
 ### My environment is not starting
 
@@ -202,4 +170,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+This library is licensed under the MIT-0 License.
