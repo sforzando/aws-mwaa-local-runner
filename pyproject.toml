@@ -1,0 +1,26 @@
+[project]
+name = "aws-mwaa-local-runner"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [{name = "Shin'ichiro Suzuki", email = "shin@sforzando.co.jp"}, {name = "Tomoya Kashimada", email = "tomoya@sforzando.co.jp"}]
+urls = {repository = "https://github.com/sforzando/aws-mwaa-local-runner"}
+
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 120
+select = ["ALL"]
+ignore = [
+  "INP001", # implicit-namespace-package
+  "T201", # print
+]
+show-fixes = true
+show-source = false
+
+[tool.ruff.pydocstyle]
+convention = "google"

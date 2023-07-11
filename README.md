@@ -4,7 +4,6 @@ This repository provides a command line interface (CLI) utility that replicates 
 
 *Please note: MWAA/AWS/DAG/Plugin issues should be raised through AWS Support or the Airflow Slack #airflow-aws channel.  Issues here should be focused on this local-runner repository.*
 
-
 ## About the CLI
 
 The CLI builds a Docker container image locally that’s similar to a MWAA production image. This allows you to run a local Apache Airflow environment to develop and test DAGs, custom plugins, and dependencies before deploying to MWAA.
@@ -14,7 +13,7 @@ The CLI builds a Docker container image locally that’s similar to a MWAA produ
 ```text
 dags/
   example_lambda.py
-  example_dag_with_taskflow_api.py    
+  example_dag_with_taskflow_api.py
   example_redshift_data_execute_sql.py
 docker/
   config/
@@ -34,7 +33,7 @@ docker/
   Dockerfile
 plugins/
   README.md
-requirements/  
+requirements/
   requirements.txt
 .gitignore
 CODE_OF_CONDUCT.md
@@ -89,7 +88,7 @@ By default, the `bootstrap.sh` script creates a username and password for your l
 
 #### Airflow UI
 
-- Open the Apache Airlfow UI: <http://localhost:8080/>.
+- Open the Apache Airflow UI: <http://localhost:8080/>.
 
 ### Step four: Add DAGs and supporting files
 
@@ -102,7 +101,7 @@ The following section describes where to add your DAG code and supporting files.
 
 #### Requirements.txt
 
-1. Add Python dependencies to `requirements/requirements.txt`.  
+1. Add Python dependencies to `requirements/requirements.txt`.
 2. To test a requirements.txt without running Apache Airflow, use the following script:
 
 ```bash
@@ -117,7 +116,7 @@ Collecting aws-batch (from -r /usr/local/airflow/dags/requirements.txt (line 1))
   Downloading https://files.pythonhosted.org/packages/5d/11/3aedc6e150d2df6f3d422d7107ac9eba5b50261cf57ab813bb00d8299a34/aws_batch-0.6.tar.gz
 Collecting awscli (from aws-batch->-r /usr/local/airflow/dags/requirements.txt (line 1))
   Downloading https://files.pythonhosted.org/packages/07/4a/d054884c2ef4eb3c237e1f4007d3ece5c46e286e4258288f0116724af009/awscli-1.19.21-py2.py3-none-any.whl (3.6MB)
-    100% |████████████████████████████████| 3.6MB 365kB/s 
+    100% |████████████████████████████████| 3.6MB 365kB/s
 ...
 ...
 ...
@@ -136,7 +135,7 @@ For example usage see [Installing Python dependencies using PyPi.org Requirement
 
 #### Custom plugins
 
-- There is a directory at the root of this repository called plugins. 
+- There is a directory at the root of this repository called plugins.
 - In this directory, create a file for your new custom plugin.
 - Add any Python dependencies to `requirements/requirements.txt`.
 

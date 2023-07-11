@@ -1,0 +1,4 @@
+failure-threshold: info
+override:
+  style:
+    - DL3059

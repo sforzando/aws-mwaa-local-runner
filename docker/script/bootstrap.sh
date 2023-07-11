@@ -13,8 +13,8 @@ echo 'airflow ALL=(ALL)NOPASSWD:ALL' | sudo EDITOR='tee -a' visudo
 
 yum erase openssl-devel -y
 yum install openssl11 openssl11-devel libffi-devel bzip2-devel wget tar xz -y
-# Install python optional standard libary module dependencies 
-yum install ncurses-devel gdbm-devel readline-devel xz-libs xz-devel uuid-devel libuuid-devel -y 
+# Install python optional standard libary module dependencies
+yum install ncurses-devel gdbm-devel readline-devel xz-libs xz-devel uuid-devel libuuid-devel -y
 yum install glibc -y
 
 # install system dependency to enable the installation of most Airflow extras
@@ -34,7 +34,7 @@ cp /python_source/$python_xz /python_install/$python_xz
 unxz ./python_install/$python_xz
 tar -xf ./python_install/$python_tar -C ./python_install
 
-pushd /python_install/$python_file 
+pushd /python_install/$python_file
 ./configure --enable-optimizations --enable-loadable-sqlite-extensions --prefix=/usr ## Override the install at /usr/bin/python3
 make install -j $(nproc) # use -j to set the cores for the build
 popd
@@ -69,11 +69,11 @@ sudo rpm -ivh /mariadb_rpm/*
 # install minimal Airflow packages
 sudo -u airflow pip3 install $PIP_OPTION --no-use-pep517 --constraint /constraints.txt poetry
 sudo -u airflow pip3 install $PIP_OPTION --constraint /constraints.txt cached-property
-sudo -u airflow pip3 install $PIP_OPTION --constraint /constraints.txt wheel 
+sudo -u airflow pip3 install $PIP_OPTION --constraint /constraints.txt wheel
 sudo -u airflow pip3 install $PIP_OPTION --constraint /constraints.txt --use-deprecated legacy-resolver apache-airflow[celery,statsd"${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}"]=="${AIRFLOW_VERSION}"
 
 # install celery[sqs] and its dependencies
-yum install -y libcurl-devel 
+yum install -y libcurl-devel
 # see https://stackoverflow.com/questions/49200056/pycurl-import-error-ssl-backend-mismatch
 export PYCURL_SSL_LIBRARY=openssl11
 sudo -u airflow pip3 install $PIP_OPTION --compile pycurl

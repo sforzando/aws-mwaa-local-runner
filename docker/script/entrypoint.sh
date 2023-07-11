@@ -29,7 +29,7 @@ install_requirements() {
           then
               echo "WARNING: Constraints should be specified for requirements.txt. Please see https://docs.aws.amazon.com/mwaa/latest/userguide/working-dags-dependencies.html#working-dags-dependencies-test-create"
           fi
-      fi    
+      fi
         echo "Installing requirements.txt"
         pip3 install --user -r "$AIRFLOW_HOME/$REQUIREMENTS_FILE"
     fi
@@ -108,16 +108,16 @@ case "$1" in
       mkdir -p $AIRFLOW_HOME/plugins
       cd $AIRFLOW_HOME/plugins
       aws s3 cp $S3_PLUGINS_PATH plugins.zip
-      unzip -o plugins.zip 
+      unzip -o plugins.zip
       rm plugins.zip
     fi
     # if S3_DAGS_PATH
     if [ -n "$S3_DAGS_PATH" ]; then
-      echo "Syncing $S3_DAGS_PATH"   
+      echo "Syncing $S3_DAGS_PATH"
       mkdir -p $AIRFLOW_HOME/dags
       cd $AIRFLOW_HOME/dags
       aws s3 sync --exact-timestamp --delete $S3_DAGS_PATH .
-    fi    
+    fi
     # if S3_REQUIREMENTS_PATH
     if [ -n "$S3_REQUIREMENTS_PATH" ]; then
       echo "Downloading $S3_REQUIREMENTS_PATH"
@@ -151,7 +151,7 @@ case "$1" in
       echo "Downloading $S3_REQUIREMENTS_PATH"
       mkdir -p $AIRFLOW_HOME/requirements
       aws s3 cp $S3_REQUIREMENTS_PATH $AIRFLOW_HOME/$REQUIREMENTS_FILE
-    fi      
+    fi
     install_requirements
     ;;
   package-requirements)
@@ -160,7 +160,7 @@ case "$1" in
       echo "Downloading $S3_REQUIREMENTS_PATH"
       mkdir -p $AIRFLOW_HOME/requirements
       aws s3 cp $S3_REQUIREMENTS_PATH $AIRFLOW_HOME/$REQUIREMENTS_FILE
-    fi      
+    fi
     package_requirements
     ;;
   test-startup-script)
