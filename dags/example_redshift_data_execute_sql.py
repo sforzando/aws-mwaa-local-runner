@@ -1,21 +1,6 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
+"""Example of using AWS Redshift."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from os import getenv
 
 from airflow import DAG
@@ -40,25 +25,23 @@ POLL_INTERVAL = 10
 
 
 @task(task_id="output_results")
-def output_query_results(statement_id):
+def output_query_results(statement_id: str) -> any:
+    """Output the results of the query to the logs."""
     hook = RedshiftDataHook()
-    resp = hook.conn.get_statement_result(
+    return hook.conn.get_statement_result(
         Id=statement_id,
     )
-
-    print(resp)
-    return resp
 
 
 with DAG(
     dag_id="example_redshift_data_execute_sql",
-    start_date=datetime(2021, 1, 1),
+    start_date=datetime(2021, 1, 1, tzinfo=timezone.utc),
     schedule_interval=None,
     catchup=False,
-    tags=['example'],
+    tags=["example"],
 ) as dag:
-    task_query = RedshiftDataOperator(
-        task_id='redshift_query',
+    redshift_query = RedshiftDataOperator(
+        task_id="redshift_query",
         cluster_identifier=REDSHIFT_CLUSTER_IDENTIFIER,
         database=REDSHIFT_DATABASE,
         db_user=REDSHIFT_DATABASE_USER,
@@ -67,4 +50,4 @@ with DAG(
         await_result=True,
     )
 
-    task_output = output_query_results(task_query.output)
+    task_output = output_query_results(redshift_query.output)
